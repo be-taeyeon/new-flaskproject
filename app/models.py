@@ -2,7 +2,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from flask import abort
 
-from config import db
+from config import db 
 
 KST = ZoneInfo("Asia/Seoul")
 
