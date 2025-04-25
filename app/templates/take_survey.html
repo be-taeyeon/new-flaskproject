@@ -1,0 +1,93 @@
+{% extends "user_layout.html" %}
+
+{% block title %}{{ survey.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">{{ survey.title }}</h1>
+        <a href="/surveys" class="text-blue-600 hover:text-blue-800">목록으로 돌아가기</a>
+    </div>
+
+    <form id="survey-form" class="space-y-8" data-question-count="{{ survey.questions|length }}">
+        {% for question in survey.questions %}
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">질문 {{ loop.index }}: {{ question.title }}</h3>
+            <div class="space-y-3" data-question-id="{{ question.id }}">
+                {% for choice in question.choices %}
+                <label class="flex items-center space-x-3">
+                    <input type="radio" 
+                           name="question_{{ question.id }}" 
+                           value="{{ choice.id }}"
+                           required
+                           class="form-radio h-4 w-4 text-blue-600">
+                    <span class="text-gray-700">{{ choice.content }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="flex justify-end mt-6">
+            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                제출하기
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('survey-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const answers = [];
+    const questionDivs = document.querySelectorAll('[data-question-id]');
+    
+    questionDivs.forEach(div => {
+        const questionId = div.getAttribute('data-question-id');
+        const selectedChoice = div.querySelector(`input[name="question_${questionId}"]:checked`);
+        
+        if (selectedChoice) {
+            answers.push({
+                question_id: parseInt(questionId),
+                choice_id: parseInt(selectedChoice.value)
+            });
+        }
+    });
+
+    const totalQuestions = parseInt(this.getAttribute('data-question-count'));
+    if (answers.length !== totalQuestions) {
+        alert('모든 질문에 답해주세요.');
+        return;
+    }
+
+    fetch('/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(answers)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || '설문 제출에 실패했습니다.');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.redirect) {
+            window.location.href = data.redirect;
+        } else {
+            alert(data.message || '설문이 제출되었습니다.');
+            window.location.href = '/surveys';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message);
+    });
+});
+</script>
+{% endblock %} 

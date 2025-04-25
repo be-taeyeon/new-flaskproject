@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - OZ Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar fixed h-full">
+            <div class="p-4">
+                <h1 class="text-2xl font-bold text-gray-800">OZ Form</h1>
+            </div>
+            <nav class="mt-4">
+                <a href="/" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-home mr-2"></i> 홈
+                </a>
+                <a href="/surveys" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-list mr-2"></i> 설문조사
+                </a>
+                <a href="/users" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-users mr-2"></i> 사용자
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

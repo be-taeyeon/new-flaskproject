@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ survey.title }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">{{ survey.title }}</h1>
+            <p class="text-gray-600">생성일: {{ survey.created_at.strftime('%Y-%m-%d') }}</p>
+        </div>
+        <div class="space-x-2">
+            <a href="/surveys/{{ survey.id }}/edit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                <i class="fas fa-edit mr-2"></i>수정
+            </a>
+            <button onclick="deleteSurvey()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                <i class="fas fa-trash mr-2"></i>삭제
+            </button>
+        </div>
+    </div>
+
+    <!-- Questions -->
+    <div class="space-y-4">
+        {% for question in survey.questions %}
+        <div class="card p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">질문 {{ loop.index }}: {{ question.title }}</h3>
+            </div>
+            
+            <!-- Choices -->
+            <div class="space-y-2">
+                {% for choice in question.choices %}
+                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <input type="radio" name="question_{{ question.id }}" class="mr-3">
+                    <span class="text-gray-800">{{ choice.content }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Add Question Button -->
+    <button class="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
+        <i class="fas fa-plus mr-2"></i>새 질문 추가
+    </button>
+</div>
+
+{% block scripts %}
+<script>
+function deleteSurvey() {
+    if (!confirm('정말로 이 설문조사를 삭제하시겠습니까?')) {
+        return;
+    }
+
+    fetch('/surveys/{{ survey.id }}', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        window.location.href = '/surveys';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('설문조사 삭제에 실패했습니다.');
+    });
+}
+</script>
+{% endblock %}
+{% endblock %} 

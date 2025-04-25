@@ -1,0 +1,53 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}{{ survey.title }} - 응답 결과{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">{{ survey.title }}</h1>
+            <p class="text-gray-600">총 응답자 수: {{ responses|length }}명</p>
+        </div>
+        <a href="{{ url_for('routes.admin_surveys') }}" class="text-blue-600 hover:text-blue-800">
+            목록으로 돌아가기
+        </a>
+    </div>
+
+    {% if responses %}
+        {% for response in responses %}
+        <div class="bg-white shadow rounded-lg mb-6 p-6">
+            <div class="border-b pb-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ response.user.name }}</h3>
+                        <p class="text-sm text-gray-600">
+                            이메일: {{ response.user.email }} | 
+                            제출일시: {{ response.submitted_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                        </p>
+                    </div>
+                    {% if response.user.ip_address %}
+                    <div class="text-sm text-gray-500">
+                        IP: {{ response.user.ip_address }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                {% for answer in response.responses %}
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="font-medium text-gray-700">{{ answer.question }}</div>
+                    <div class="text-gray-900">{{ answer.answer }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-12">
+            <p class="text-gray-500 text-lg">아직 응답이 없습니다.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

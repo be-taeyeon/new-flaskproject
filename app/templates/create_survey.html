@@ -1,0 +1,278 @@
+{% extends "layout.html" %}
+
+{% block title %}새 설문조사 만들기{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">새 설문조사 만들기</h1>
+        <button id="save-survey" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+            <i class="fas fa-save mr-2"></i>저장하기
+        </button>
+    </div>
+
+    <!-- Survey Form -->
+    <div class="card p-6">
+        <div class="space-y-4">
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-700">설문조사 제목</label>
+                <input type="text" id="title" name="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+            <div class="flex items-center">
+                <input type="checkbox" id="isScored" name="isScored" class="mr-2">
+                <label for="isScored" class="text-sm font-medium text-gray-700">점수 기반 설문</label>
+            </div>
+            
+            <!-- 점수 구간 설정 -->
+            <div id="scoreRanges" class="hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-gray-900">점수 구간 설정</h3>
+                    <button type="button" id="addScoreRange" 
+                            class="text-blue-600 hover:text-blue-800">
+                        + 구간 추가
+                    </button>
+                </div>
+                <div id="scoreRangesList" class="space-y-3">
+                    <!-- 점수 구간들이 여기에 추가됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions" class="space-y-4">
+        <!-- Questions will be added here dynamically -->
+    </div>
+
+    <!-- Add Question Button -->
+    <button id="add-question" class="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
+        <i class="fas fa-plus mr-2"></i>새 질문 추가
+    </button>
+</div>
+
+{% block scripts %}
+<script>
+let questionCount = 0;
+
+function addQuestion() {
+    questionCount++;
+    const isScored = document.getElementById('isScored').checked;
+    const questionHtml = `
+        <div class="card p-6 question" data-question="${questionCount}">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex-1">
+                    <input type="text" 
+                           class="question-title w-full text-xl font-semibold text-gray-800 border-none focus:ring-0" 
+                           placeholder="질문을 입력하세요">
+                </div>
+                <button class="delete-question text-red-500 hover:text-red-700 ml-2">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            
+            <div class="choices space-y-2">
+                <!-- Choices will be added here -->
+            </div>
+
+            <button class="add-choice mt-4 text-blue-500 hover:text-blue-700">
+                <i class="fas fa-plus mr-2"></i>선택지 추가
+            </button>
+        </div>
+    `;
+    document.getElementById('questions').insertAdjacentHTML('beforeend', questionHtml);
+    addChoice(document.querySelector(`[data-question="${questionCount}"]`));
+    addChoice(document.querySelector(`[data-question="${questionCount}"]`));
+}
+
+function addChoice(questionElement) {
+    const isScored = document.getElementById('isScored').checked;
+    const choiceHtml = `
+        <div class="flex items-center space-x-2">
+            <input type="radio" disabled class="mr-3">
+            <input type="text" 
+                   class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                   placeholder="선택지를 입력하세요">
+            ${isScored ? `
+            <input type="number" 
+                   class="w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 score-input" 
+                   placeholder="점수"
+                   min="0">
+            ` : ''}
+            <button class="delete-choice text-red-500 hover:text-red-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    questionElement.querySelector('.choices').insertAdjacentHTML('beforeend', choiceHtml);
+}
+
+document.getElementById('add-question').addEventListener('click', addQuestion);
+
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.add-choice')) {
+        const questionElement = e.target.closest('.question');
+        addChoice(questionElement);
+    }
+    if (e.target.closest('.delete-choice')) {
+        e.target.closest('.flex').remove();
+    }
+    if (e.target.closest('.delete-question')) {
+        e.target.closest('.question').remove();
+    }
+});
+
+// 점수 구간 추가 함수
+function addScoreRange() {
+    const rangeHtml = `
+        <div class="flex items-center space-x-4">
+            <div class="flex-1">
+                <input type="number" class="score-range-max w-24 rounded-md border-gray-300" 
+                       placeholder="최대 점수" min="0">
+                <span class="mx-2">점 미만:</span>
+                <input type="text" class="score-range-message flex-1 rounded-md border-gray-300" 
+                       placeholder="결과 메시지">
+            </div>
+            <button type="button" class="delete-range text-red-500 hover:text-red-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    document.getElementById('scoreRangesList').insertAdjacentHTML('beforeend', rangeHtml);
+}
+
+// 점수 기반 설문 체크박스 이벤트
+document.getElementById('isScored').addEventListener('change', function(e) {
+    const scoreRanges = document.getElementById('scoreRanges');
+    const scoreInputs = document.querySelectorAll('.score-input');
+    
+    if (e.target.checked) {
+        scoreRanges.classList.remove('hidden');
+        if (document.getElementById('scoreRangesList').children.length === 0) {
+            addScoreRange();  // 첫 번째 구간 자동 추가
+        }
+        // 기존 선택지에 점수 입력 필드 추가
+        document.querySelectorAll('.choices .flex').forEach(choice => {
+            if (!choice.querySelector('.score-input')) {
+                const scoreInput = document.createElement('input');
+                scoreInput.type = 'number';
+                scoreInput.className = 'w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 score-input';
+                scoreInput.placeholder = '점수';
+                scoreInput.min = '0';
+                choice.insertBefore(scoreInput, choice.querySelector('.delete-choice'));
+            }
+        });
+    } else {
+        scoreRanges.classList.add('hidden');
+        // 점수 입력 필드 제거
+        scoreInputs.forEach(input => input.remove());
+    }
+});
+
+// 점수 구간 추가 버튼 이벤트
+document.getElementById('addScoreRange').addEventListener('click', addScoreRange);
+
+// 점수 구간 삭제 이벤트
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.delete-range')) {
+        e.target.closest('.flex').remove();
+    }
+});
+
+document.getElementById('save-survey').addEventListener('click', function() {
+    const title = document.getElementById('title').value;
+    const isScored = document.getElementById('isScored').checked;
+    
+    if (!title) {
+        alert('설문조사 제목을 입력해주세요.');
+        return;
+    }
+
+    // 점수 구간 정보 수집
+    const scoreRanges = [];
+    if (isScored) {
+        document.querySelectorAll('#scoreRangesList > div').forEach(rangeDiv => {
+            const maxScore = parseInt(rangeDiv.querySelector('.score-range-max').value);
+            const message = rangeDiv.querySelector('.score-range-message').value;
+            if (maxScore && message) {
+                scoreRanges.push({
+                    max_score: maxScore,
+                    message: message
+                });
+            }
+        });
+        
+        if (scoreRanges.length === 0) {
+            alert('최소 하나의 점수 구간을 설정해주세요.');
+            return;
+        }
+    }
+
+    const questions = [];
+    document.querySelectorAll('.question').forEach(questionElement => {
+        const title = questionElement.querySelector('.question-title').value;
+        if (!title) return;
+
+        const choices = [];
+        questionElement.querySelectorAll('.choices .flex').forEach(choiceElement => {
+            const content = choiceElement.querySelector('input[type="text"]').value;
+            const scoreInput = choiceElement.querySelector('.score-input');
+            const score = scoreInput ? parseInt(scoreInput.value) || 0 : 0;
+            
+            if (content) {
+                choices.push({
+                    content: content,
+                    score: score
+                });
+            }
+        });
+
+        if (choices.length > 0) {
+            questions.push({
+                title: title,
+                choices: choices
+            });
+        }
+    });
+
+    if (questions.length === 0) {
+        alert('최소 하나의 질문과 선택지를 입력해주세요.');
+        return;
+    }
+
+    // Send data to server
+    fetch('/surveys', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            title: title,
+            is_scored: isScored,
+            score_ranges: scoreRanges,
+            questions: questions
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || '설문조사 생성에 실패했습니다.');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.id) {
+            window.location.href = `/surveys/${data.id}`;
+        } else {
+            throw new Error('설문조사 ID를 받지 못했습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message || '설문조사 생성에 실패했습니다.');
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 
