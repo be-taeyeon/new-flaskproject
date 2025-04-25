@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, abort, render_template, redirect, url_for, session, current_app
 from flasgger import Swagger, swag_from
-from app.models import User, Image, Question, Choices, Answer, Survey
+from app.models import User, Image, Question, Choices, Answer, Survey, ScoreRange
 from config import db
 import redis
 from datetime import datetime
@@ -276,6 +276,7 @@ def new_survey():
 def create_survey():
     try:
         data = request.get_json()
+        print("Received data:", data)  # 디버깅을 위한 로그
         
         # Create new survey
         survey = Survey(
@@ -284,6 +285,18 @@ def create_survey():
         )
         db.session.add(survey)
         db.session.flush()  # Get survey.id before committing
+        
+        # Create score ranges if it's a scored survey
+        if survey.is_scored and "score_ranges" in data:
+            print("Creating score ranges:", data["score_ranges"])  # 디버깅을 위한 로그
+            for range_data in data["score_ranges"]:
+                score_range = ScoreRange(
+                    survey_id=survey.id,
+                    max_score=range_data["max_score"],
+                    message=range_data["message"]
+                )
+                db.session.add(score_range)
+                print(f"Added score range: max_score={range_data['max_score']}, message={range_data['message']}")
         
         # Create questions and choices
         for q_data in data["questions"]:
@@ -338,59 +351,11 @@ def admin_index():
                          recent_activities=recent_activities)
 
 @routes.route("/surveys/<int:survey_id>", methods=["GET"])
-@swag_from({
-    "tags": ["설문조사"],
-    "description": "특정 설문조사의 상세 정보를 가져옵니다",
-    "parameters": [
-        {
-            "name": "survey_id",
-            "in": "path",
-            "type": "integer",
-            "required": True,
-            "description": "조회할 설문조사 ID"
-        }
-    ],
-    "responses": {
-        200: {
-            "description": "설문조사 상세 정보 조회 성공",
-            "examples": {
-                "application/json": {
-                    "id": 1,
-                    "title": "좋아하는 연예인 심리테스트",
-                    "questions": [
-                        {
-                            "id": 1,
-                            "title": "당신이 가장 좋아하는 연예인은?",
-                            "choices": [
-                                {
-                                    "id": 1,
-                                    "content": "아이유"
-                                },
-                                {
-                                    "id": 2,
-                                    "content": "뉴진스"
-                                }
-                            ]
-                        }
-                    ],
-                    "created_at": "2024-04-24T10:00:00",
-                    "updated_at": "2024-04-24T10:00:00"
-                }
-            }
-        },
-        404: {
-            "description": "설문조사를 찾을 수 없음",
-            "examples": {
-                "application/json": {
-                    "message": "Survey not found"
-                }
-            }
-        }
-    }
-})
 def get_survey(survey_id):
     survey = Survey.query.get_or_404(survey_id)
-    return render_template("survey_detail.html", survey=survey)
+    if request.path.startswith('/admin'):
+        return render_template("admin/survey_detail.html", survey=survey)
+    return render_template("user/survey_detail.html", survey=survey)
 
 @routes.route("/surveys/<int:survey_id>", methods=["DELETE"])
 def delete_survey(survey_id):
@@ -418,29 +383,55 @@ def edit_survey(survey_id):
 
 @routes.route("/surveys/<int:survey_id>", methods=["PUT"])
 def update_survey(survey_id):
-    survey = Survey.query.get_or_404(survey_id)
-    data = request.get_json()
-    
-    survey.title = data["title"]
-    
-    # Delete existing questions and choices
-    for question in survey.questions:
-        for choice in question.choices:
-            db.session.delete(choice)
-        db.session.delete(question)
-    
-    # Create new questions and choices
-    for q_data in data["questions"]:
-        question = Question(title=q_data["title"], survey_id=survey.id)
-        db.session.add(question)
-        db.session.flush()
+    try:
+        survey = Survey.query.get_or_404(survey_id)
+        data = request.get_json()
         
-        for c_data in q_data["choices"]:
-            choice = Choices(content=c_data["content"], question_id=question.id)
-            db.session.add(choice)
-    
-    db.session.commit()
-    return jsonify({"id": survey.id})
+        # Update survey title and scoring option
+        survey.title = data["title"]
+        survey.is_scored = data.get("is_scored", False)
+        
+        # Delete existing score ranges
+        for range in survey.score_ranges:
+            db.session.delete(range)
+            
+        # Create new score ranges if it's a scored survey
+        if survey.is_scored and "score_ranges" in data:
+            for range_data in data["score_ranges"]:
+                score_range = ScoreRange(
+                    survey_id=survey.id,
+                    max_score=range_data["max_score"],
+                    message=range_data["message"]
+                )
+                db.session.add(score_range)
+        
+        # Delete existing questions and choices
+        for question in survey.questions:
+            for choice in question.choices:
+                db.session.delete(choice)
+            db.session.delete(question)
+        
+        # Create new questions and choices
+        for q_data in data["questions"]:
+            question = Question(title=q_data["title"], survey_id=survey.id)
+            db.session.add(question)
+            db.session.flush()
+            
+            for c_data in q_data["choices"]:
+                choice = Choices(
+                    content=c_data["content"],
+                    question_id=question.id,
+                    score=c_data.get("score", 0) if survey.is_scored else 0
+                )
+                db.session.add(choice)
+        
+        db.session.commit()
+        return jsonify({"id": survey.id})
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating survey: {str(e)}")
+        return jsonify({"error": "설문조사 수정 중 오류가 발생했습니다."}), 500
 
 @routes.route("/surveys/<int:survey_id>/take", methods=["GET"])
 def take_survey(survey_id):
@@ -460,7 +451,7 @@ def admin_surveys():
 @routes.route("/admin/surveys/<int:survey_id>", methods=["GET"])
 def admin_survey_detail(survey_id):
     survey = Survey.query.get_or_404(survey_id)
-    return render_template("survey_detail.html", survey=survey)
+    return render_template("admin/survey_detail.html", survey=survey)
 
 @routes.route("/admin/surveys/new", methods=["GET"])
 def admin_new_survey():

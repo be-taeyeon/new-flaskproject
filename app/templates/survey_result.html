@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "user_layout.html" %}
 
 {% block title %}설문 결과{% endblock %}
 
@@ -10,8 +10,16 @@
             
             <div class="mb-8">
                 <div class="text-center">
-                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ score }}점</div>
-                    <p class="text-xl text-gray-700">{{ result_message }}</p>
+                    {% if survey.is_scored %}
+                        <div class="text-4xl font-bold text-blue-600 mb-4">총점: {{ score }}점</div>
+                        <div class="text-xl text-gray-700 bg-gray-50 p-4 rounded-lg">
+                            {{ result_message }}
+                        </div>
+                    {% else %}
+                        <div class="text-xl text-gray-700">
+                            {{ result_message }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 

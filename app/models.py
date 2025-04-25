@@ -97,19 +97,27 @@ class Survey(CommonModel):
         return total_score
         
     def get_result_message(self, score):
-        if not self.is_scored:
-            return None
+        if not self.is_scored or score is None:
+            return "설문에 참여해주셔서 감사합니다."
+            
+        # 점수 구간이 없는 경우
+        if not self.score_ranges:
+            return f"총점: {score}점"
             
         # 점수 구간에 따른 결과 메시지 반환
-        for range in sorted(self.score_ranges, key=lambda x: x.max_score):
-            if score < range.max_score:
-                return range.message
+        ranges = sorted(self.score_ranges, key=lambda x: x.max_score)
+        
+        # 가장 낮은 구간보다 낮은 경우
+        if score < ranges[0].max_score:
+            return ranges[0].message
+            
+        # 중간 구간들 확인
+        for i in range(1, len(ranges)):
+            if score < ranges[i].max_score:
+                return ranges[i].message
                 
         # 모든 구간보다 높은 점수인 경우 마지막 구간의 메시지 반환
-        if self.score_ranges:
-            return self.score_ranges[-1].message
-            
-        return None
+        return ranges[-1].message
 
 class Question(CommonModel):
     __tablename__ = "questions"

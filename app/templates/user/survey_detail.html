@@ -1,0 +1,42 @@
+{% extends "user_layout.html" %}
+
+{% block title %}{{ survey.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">{{ survey.title }}</h1>
+                    <p class="text-gray-600">생성일: {{ survey.created_at.strftime('%Y-%m-%d') }}</p>
+                </div>
+                <a href="/surveys" class="text-blue-600 hover:text-blue-800">목록으로 돌아가기</a>
+            </div>
+
+            <!-- Questions -->
+            <div class="space-y-6">
+                {% for question in survey.questions %}
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">질문 {{ loop.index }}: {{ question.title }}</h3>
+                    <div class="space-y-3">
+                        {% for choice in question.choices %}
+                        <div class="flex items-center p-3 bg-white rounded-lg">
+                            <input type="radio" name="question_{{ question.id }}" class="mr-3">
+                            <span class="text-gray-700">{{ choice.content }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-8 text-center">
+                <a href="/surveys/{{ survey.id }}/take" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                    설문 참여하기
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
