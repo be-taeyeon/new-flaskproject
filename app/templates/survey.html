@@ -1,0 +1,21 @@
+<!-- templates/survey.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설문 선택</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>설문을 선택하세요</h2>
+        <a href="/survey/male">
+            <button>남자어 설문 시작</button>
+        </a>
+        <a href="/survey/female">
+            <button>여자어 설문 시작</button>
+        </a>
+    </div>
+</body>
+</html>

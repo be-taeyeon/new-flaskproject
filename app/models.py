@@ -1,10 +1,13 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from flask import abort
+from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
-from config import db 
+from flask import abort
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.ext.declarative import declared_attr
+
 KST = ZoneInfo("Asia/Seoul")
+db = SQLAlchemy()
 
 class CommonModel(db.Model):
     __abstract__ = True
@@ -16,6 +19,14 @@ class CommonModel(db.Model):
         db.DateTime, default=lambda: datetime.now(tz=KST),
         onupdate=lambda: datetime.now(tz=KST), nullable=False
     )
+    
+    @declared_attr
+    def survey_type(cls):
+        return db.Column(db.Enum("male", "female", name="gender_status"), nullable=False)
+    
+    @declared_attr
+    def choices(cls):
+        return db.relationship('Choice', backref='question', lazy=True)
 
 
 class AgeStatus(Enum):
@@ -53,17 +64,13 @@ class User(CommonModel):
         """입력된 비밀번호가 일치하는지 확인하는 메서드"""
         return check_password_hash(self.password_hash, password)
 
-    
-    
     def to_dict(self):
         return {
             "id": self.id,
             "name": self.name,
             "username": self.username,
             "age": self.age.value if hasattr(self.age, "value") else self.age,
-            "gender": (
-                self.gender.value if hasattr(self.gender, "value") else self.gender
-            ),
+            "gender": self.gender.value if hasattr(self.gender, "value") else self.gender,
             "email": self.email,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
@@ -109,18 +116,20 @@ class Question(CommonModel):
         }
 
 
-class Choices(CommonModel):
+class Choice(CommonModel):
     __tablename__ = "choices"
     content = db.Column(db.Text, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     sqe = db.Column(db.Integer, nullable=False)
 
-    question_id = db.Column(db.Integer, db.ForeignKey("questions.id"))
+    question_id = db.Column(db.Integer, db.ForeignKey("questions.id"), nullable=False)
+
+    choice_text = db.Column(db.String(255), nullable=False)  # 내용 필드 통합
 
     def to_dict(self):
         return {
             "id": self.id,
-            "content": self.content,
+            "content": self.content,  # content를 선택적으로 사용
             "is_active": self.is_active,
             "sqe": self.sqe,
             "question_id": self.question_id,
@@ -133,7 +142,10 @@ class Answer(CommonModel):
     __tablename__ = "answers"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     choice_id = db.Column(db.Integer, db.ForeignKey("choices.id"))
-
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)  # 수정
+    answer = db.Column(db.String(255), nullable=False)
+    survey_type = db.Column(db.Enum(GenderStatus), nullable=False)  # Enum으로 변경
+    
     def to_dict(self):
         return {
             "id": self.id,
@@ -142,4 +154,3 @@ class Answer(CommonModel):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
-    

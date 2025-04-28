@@ -1,26 +1,37 @@
+<!-- templates/signup.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <header>
-        남자어/여자어 능력테스트
-    </header>
     <div class="container">
-        <div class="form-container">
-            <h2>회원가입</h2>
-            <form method="POST" action="{{ url_for('main.signup') }}">
-                <input type="text" name="username" placeholder="아이디" required>
-                <input type="email" name="email" placeholder="이메일" required>
-                <input type="password" name="password" placeholder="비밀번호" required>
-                <input type="submit" value="회원가입">
-            </form>
-            <p>이미 계정이 있으신가요? <a href="{{ url_for('main.login') }}">로그인</a></p>
-        </div>
+        <h2>회원가입</h2>
+        <form action="/signup" method="POST">
+            <label for="name">이름:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="age">나이:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="gender">성별:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">남자</option>
+                <option value="female">여자</option>
+            </select>
+
+            <label for="email">이메일:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">가입하기</button>
+        </form>
     </div>
 </body>
 </html>
