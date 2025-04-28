@@ -1,26 +1,23 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>설문 결과</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>{{ survey_type }} 설문 결과</title>
 </head>
 <body>
-    <div class="survey-results-container">
-        <h2>설문 결과</h2>
-        <div class="result-content">
-            {% for question, result in results.items() %}
-                <div class="result-item">
-                    <h3>{{ question }}</h3>
-                    <p>평균 선택: {{ result['average'] }}</p>
-                    <p>가장 많이 선택된 답변: {{ result['top'][0] }} (선택 횟수: {{ result['top'][1] }})</p>
-                </div>
-            {% endfor %}
-        </div>
-        <a href="{{ url_for('main.index') }}" class="btn">메인 페이지로 돌아가기</a>
-    </div>
+    <h1>{{ survey_type }} 설문 결과</h1>
+    
+    {% if results %}
+        {% for question, data in results.items() %}
+            <h2>{{ question }}</h2>
+            <p><strong>평균 선택지:</strong> {{ data.average }}</p>
+            <p><strong>가장 많이 선택된 답변:</strong> {{ data.top.choice_text }} (선택 횟수: {{ data.top.cnt }})</p>
+        {% endfor %}
+    {% else %}
+        <p>설문 결과가 없습니다.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('main.index') }}">홈으로 돌아가기</a>
 </body>
 </html>
-

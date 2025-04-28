@@ -1,83 +1,132 @@
-/* 기본 폰트 설정 */
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #f0f4f8;
+/* 기본 스타일 설정 */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-/* 회원가입, 로그인 폼 컨테이너 */
-.signup-container, .login-container {
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 30px;
-  background-color: #fff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  text-align: center;
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
 }
 
+/* 페이지 공통 스타일 */
 h2 {
-  font-size: 2em;
-  color: #4A90E2;
-  margin-bottom: 30px;
-}
-
-/* 입력 필드 스타일 */
-.input-group {
+  text-align: center;
+  font-size: 2rem;
   margin-bottom: 20px;
-  text-align: left;
+  color: #333;
 }
 
-.input-group label {
-  font-size: 1em;
-  color: #555;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.input-group input, .input-group select {
-  width: 100%;
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 5px;
-}
-
-.input-group input:focus, .input-group select:focus {
-  border-color: #4A90E2;
-  outline: none;
-}
-
-/* 버튼 스타일 */
-.btn-submit {
-  background-color: #4A90E2;
-  color: white;
-  padding: 15px;
-  font-size: 1.2em;
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-submit:hover {
-  background-color: #357ABD;
-}
-
-/* 링크 스타일 */
-.signup-link, .login-link {
-  margin-top: 20px;
-  font-size: 1em;
-}
-
-.signup-link a, .login-link a {
-  color: #4A90E2;
+a {
+  color: #007bff;
   text-decoration: none;
 }
 
-.signup-link a:hover, .login-link a:hover {
+a:hover {
   text-decoration: underline;
+}
+
+/* 버튼 스타일 */
+.btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+/* 폼 스타일 */
+.form-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* 설문 페이지 스타일 */
+.survey-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.survey-question {
+  margin-bottom: 30px;
+}
+
+.survey-question p {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.survey-option {
+  margin-bottom: 10px;
+}
+
+.survey-option input {
+  margin-right: 10px;
+}
+
+/* 설문 완료 페이지 스타일 */
+.survey-complete {
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.survey-complete h2 {
+  color: #28a745;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.survey-complete p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.survey-complete .btn {
+  width: 200px;
+  margin: 0 auto;
 }

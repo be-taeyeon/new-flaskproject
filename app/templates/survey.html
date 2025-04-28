@@ -1,29 +1,23 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>설문 참여</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>{{ survey_type }} 설문</title>
 </head>
 <body>
-    <div class="survey-container">
-        <h2>설문에 참여해주세요</h2>
-        <form action="{{ url_for('main.survey', survey_type=survey_type) }}" method="POST">
-            {% for question in questions %}
-                <div class="survey-question">
-                    <h3>{{ question.title }}</h3>
-                    {% for choice in question.choices %}
-                        <label>
-                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
-                            {{ choice.choice_text }}
-                        </label><br>
-                    {% endfor %}
-                </div>
+    <h1>{{ survey_type }} 설문</h1>
+    <form method="POST">
+        {% for question in questions %}
+            <h2>{{ question.title }}</h2>
+            {% for choice in question.choices %}
+                <label>
+                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
+                    {{ choice.choice_text }}
+                </label><br>
             {% endfor %}
-            <button type="submit" class="btn-submit">설문 제출</button>
-        </form>
-    </div>
+        {% endfor %}
+        <button type="submit">제출</button>
+    </form>
 </body>
 </html>

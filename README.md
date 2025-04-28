@@ -2,7 +2,7 @@
 ```bash
 $ GPT 시작해줘~^^
 ```
-[서비스 링크]
+[서비스 링크](http://43.200.191.147:5000/surveys)
 
 <br/>
 <br/>
@@ -19,7 +19,7 @@ $ GPT 시작해줘~^^
 |:------:|:------:|:------:|:------:|
 | <img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="김태연" width="150"> | <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="최규호" width="150"> | <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="이유진" width="150"> | <img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="김상협" width="150"> |
 | 대표 | 노예 | 노예 | 노예 |
-| [GitHub](https://github.com/be-taeyeon) | [GitHub](https://github.com/gyuho231) | [GitHub](NOT YET) | [GitHub](https://github.com/harry99990) |
+| [GitHub](https://github.com/be-taeyeon) | [GitHub](https://github.com/gyuho231) | [GitHub](https://github.com/Leeyujin-02) | [GitHub](https://github.com/harry99990) |
 
 <br/>
 <br/>
