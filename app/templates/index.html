@@ -1,26 +1,15 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>남자어/여자어 능력평가 고사</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<head><meta charset="UTF-8"><title>메인</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>남자어/여자어 능력평가 고사!</h1>
-        </header>
-        
-        <div class="auth-buttons">
-            <button class="btn" onclick="window.location.href='/login'">로그인</button>
-            <button class="btn" onclick="window.location.href='/signup'">회원가입</button>
-        </div>
-
-        <section class="intro">
-            <p>능력평가 고사를 시작하려면 로그인 후 남자어 또는 여자어를 선택하여 설문을 시작하세요.</p>
-        </section>
-    </div>
+  <div class="box">
+    <h1>안녕하세요, {{ name }}님!</h1>
+    <a href="{{ url_for('main.logout') }}" class="btn">로그아웃</a>
+    <h2>심리테스트 능력고사</h2>
+    <a href="{{ url_for('main.survey', survey_type='male') }}" class="btn">남자어 테스트</a>
+    <a href="{{ url_for('main.survey', survey_type='female') }}" class="btn">여자어 테스트</a>
+  </div>
 </body>
 </html>

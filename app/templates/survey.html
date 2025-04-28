@@ -1,21 +1,22 @@
-<!-- templates/survey.html -->
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>설문 선택</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<head><meta charset="UTF-8"><title>설문 - {{ survey_type }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h2>설문을 선택하세요</h2>
-        <a href="/survey/male">
-            <button>남자어 설문 시작</button>
-        </a>
-        <a href="/survey/female">
-            <button>여자어 설문 시작</button>
-        </a>
-    </div>
+  <div class="box">
+    <h1>{{ '남자어' if survey_type=='male' else '여자어' }} 심리테스트</h1>
+    <form method="POST">
+      {% for q in questions %}
+      <div class="question">
+        <p>{{ q.title }}</p>
+        {% for c in q.choices %}
+        <label><input type="radio" name="question_{{q.id}}" value="{{c.id}}" required> {{c.choice_text}}</label>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <button type="submit">제출하기</button>
+    </form>
+  </div>
 </body>
 </html>

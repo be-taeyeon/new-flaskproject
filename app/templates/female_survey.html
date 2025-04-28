@@ -1,34 +1,19 @@
-<!-- templates/female_survey.html -->
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>여자어 설문</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<head><meta charset="UTF-8"><title>결과</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h2>여자어 설문</h2>
-        <form action="/survey/female/submit" method="POST">
-            <label for="question1">1. 좋아하는 취미는?</label>
-            <select id="question1" name="question1" required>
-                <option value="reading">독서</option>
-                <option value="cooking">요리</option>
-                <option value="painting">그림 그리기</option>
-                <option value="other">기타</option>
-            </select>
-
-            <label for="question2">2. 이상형은 어떤 사람인가요?</label>
-            <select id="question2" name="question2" required>
-                <option value="gentle">부드럽고 다정한 사람</option>
-                <option value="outgoing">활발하고 외향적인 사람</option>
-                <option value="serious">진지하고 신중한 사람</option>
-                <option value="other">기타</option>
-            </select>
-
-            <button type="submit">제출하기</button>
-        </form>
+  <div class="box">
+    <h1>{{ '남자어' if survey_type=='male' else '여자어' }} 결과</h1>
+    {% for title, data in results.items() %}
+    <div class="result">
+      <p><strong>{{ title }}</strong></p>
+      <p>평균 점수: {{ data.average|round(2) if data.average else 'N/A' }}</p>
+      <p>최다 선택: {{ data.top[0] }} ({{ data.top[1] }}회)</p>
     </div>
+    {% endfor %}
+  </div>
 </body>
 </html>
+

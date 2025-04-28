@@ -1,156 +1,32 @@
-from datetime import datetime
-from zoneinfo import ZoneInfo
-from flask_sqlalchemy import SQLAlchemy
-from enum import Enum
-from flask import abort
-from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.ext.declarative import declared_attr
+from app import db
+from flask_login import UserMixin
 
-KST = ZoneInfo("Asia/Seoul")
-db = SQLAlchemy()
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
+    id       = db.Column(db.Integer, primary_key=True)
+    name     = db.Column(db.String(50), nullable=False)
+    email    = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    age      = db.Column(db.Date, nullable=False)
+    gender   = db.Column(db.Enum('male','female', name='gender'), nullable=False)
+    answers  = db.relationship('Answer', backref='user', lazy=True)
 
-class CommonModel(db.Model):
-    __abstract__ = True
-    id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(
-        db.DateTime, default=lambda: datetime.now(tz=KST), nullable=False
-    )
-    updated_at = db.Column(
-        db.DateTime, default=lambda: datetime.now(tz=KST),
-        onupdate=lambda: datetime.now(tz=KST), nullable=False
-    )
-    
-    @declared_attr
-    def survey_type(cls):
-        return db.Column(db.Enum("male", "female", name="gender_status"), nullable=False)
-    
-    @declared_attr
-    def choices(cls):
-        return db.relationship('Choice', backref='question', lazy=True)
+class Question(db.Model):
+    __tablename__ = 'questions'
+    id          = db.Column(db.Integer, primary_key=True)
+    title       = db.Column(db.String(200), nullable=False)
+    survey_type = db.Column(db.Enum('male','female', name='survey_type'), nullable=False)
+    choices     = db.relationship('Choice', backref='question', lazy=True)
 
+class Choice(db.Model):
+    __tablename__ = 'choices'
+    id          = db.Column(db.Integer, primary_key=True)
+    choice_text = db.Column(db.String(200), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
 
-class AgeStatus(Enum):
-    teen = "teen"
-    twenty = "twenty"
-    thirty = "thirty"
-    fourty = "fourty"
-    fifty = "fifty"
-
-
-class GenderStatus(Enum):
-    male = "male"
-    female = "female"
-
-
-class ImageStatus(Enum):
-    main = "main"
-    sub = "sub"
-
-
-class User(CommonModel):
-    __tablename__ = "users"
-    name = db.Column(db.String(10), nullable=False)
-    age = db.Column(db.Enum(AgeStatus), nullable=False)
-    gender = db.Column(db.Enum(GenderStatus), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    
-    def set_password(self, password):
-        """비밀번호를 암호화하여 저장하는 메서드"""
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        """입력된 비밀번호가 일치하는지 확인하는 메서드"""
-        return check_password_hash(self.password_hash, password)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "username": self.username,
-            "age": self.age.value if hasattr(self.age, "value") else self.age,
-            "gender": self.gender.value if hasattr(self.gender, "value") else self.gender,
-            "email": self.email,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat(),
-        }
-
-
-class Image(CommonModel):
-    __tablename__ = "images"
-    url = db.Column(db.TEXT, nullable=False)
-    type = db.Column(db.Enum(ImageStatus), nullable=False)
-
-    questions = db.relationship("Question", back_populates="image")
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "url": self.url,
-            "type": self.type.value if hasattr(self.type, "value") else self.type,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat(),
-        }
-
-
-class Question(CommonModel):
-    __tablename__ = "questions"
-    title = db.Column(db.String(100), nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False, default=True)
-    sqe = db.Column(db.Integer, nullable=False)
-
-    image_id = db.Column(db.Integer, db.ForeignKey("images.id"), nullable=False)
-
-    image = db.relationship("Image", back_populates="questions")
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "title": self.title,
-            "is_active": self.is_active,
-            "sqe": self.sqe,
-            "image": self.image.to_dict() if self.image else None,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat(),
-        }
-
-
-class Choice(CommonModel):
-    __tablename__ = "choices"
-    content = db.Column(db.Text, nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False, default=True)
-    sqe = db.Column(db.Integer, nullable=False)
-
-    question_id = db.Column(db.Integer, db.ForeignKey("questions.id"), nullable=False)
-
-    choice_text = db.Column(db.String(255), nullable=False)  # 내용 필드 통합
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "content": self.content,  # content를 선택적으로 사용
-            "is_active": self.is_active,
-            "sqe": self.sqe,
-            "question_id": self.question_id,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat(),
-        }
-
-
-class Answer(CommonModel):
-    __tablename__ = "answers"
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    choice_id = db.Column(db.Integer, db.ForeignKey("choices.id"))
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)  # 수정
-    answer = db.Column(db.String(255), nullable=False)
-    survey_type = db.Column(db.Enum(GenderStatus), nullable=False)  # Enum으로 변경
-    
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "user_id": self.user_id,
-            "choice_id": self.choice_id,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat(),
-        }
+class Answer(db.Model):
+    __tablename__ = 'answers'
+    id          = db.Column(db.Integer, primary_key=True)
+    user_id     = db.Column(db.Integer, db.ForeignKey('users.id'),    nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'),nullable=False)
+    choice_id   = db.Column(db.Integer, db.ForeignKey('choices.id'),  nullable=False)
