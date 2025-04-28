@@ -84,3 +84,19 @@ def survey_results(survey_type):
             .first()
         results[q.title] = {'average':avg, 'top':top}
     return render_template('survey_results.html', results=results, survey_type=survey_type)
+
+@main.route('/next_question/<int:question_id>')
+@login_required
+def next_question(question_id):
+    questions = Question.query.filter_by(survey_type=current_survey_type).all()
+    total = len(questions)
+    question = Question.query.get_or_404(question_id)
+    current_idx = questions.index(question) + 1
+
+    return render_template(
+        'survey_question.html',
+        question=question,
+        survey_type=question.survey_type,
+        current_question=current_idx,
+        total_questions=total
+    )

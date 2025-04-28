@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><title>설문 - {{ survey_type }}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설문 참여</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-  <div class="box">
-    <h1>{{ '남자어' if survey_type=='male' else '여자어' }} 심리테스트</h1>
-    <form method="POST">
-      {% for q in questions %}
-      <div class="question">
-        <p>{{ q.title }}</p>
-        {% for c in q.choices %}
-        <label><input type="radio" name="question_{{q.id}}" value="{{c.id}}" required> {{c.choice_text}}</label>
-        {% endfor %}
-      </div>
-      {% endfor %}
-      <button type="submit">제출하기</button>
-    </form>
-  </div>
+    <div class="survey-container">
+        <h2>설문에 참여해주세요</h2>
+        <form action="{{ url_for('main.survey', survey_type=survey_type) }}" method="POST">
+            {% for question in questions %}
+                <div class="survey-question">
+                    <h3>{{ question.title }}</h3>
+                    {% for choice in question.choices %}
+                        <label>
+                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
+                            {{ choice.choice_text }}
+                        </label><br>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn-submit">설문 제출</button>
+        </form>
+    </div>
 </body>
 </html>

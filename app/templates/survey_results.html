@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설문 결과</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="survey-results-container">
+        <h2>설문 결과</h2>
+        <div class="result-content">
+            {% for question, result in results.items() %}
+                <div class="result-item">
+                    <h3>{{ question }}</h3>
+                    <p>평균 선택: {{ result['average'] }}</p>
+                    <p>가장 많이 선택된 답변: {{ result['top'][0] }} (선택 횟수: {{ result['top'][1] }})</p>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('main.index') }}" class="btn">메인 페이지로 돌아가기</a>
+    </div>
+</body>
+</html>
+

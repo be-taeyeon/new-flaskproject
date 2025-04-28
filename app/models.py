@@ -8,7 +8,7 @@ class User(db.Model, UserMixin):
     email    = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     age      = db.Column(db.Date, nullable=False)
-    gender   = db.Column(db.Enum('male','female', name='gender'), nullable=False)
+    gender   = db.Column(db.Enum('male', 'female', name='gender'), nullable=False)
     answers  = db.relationship('Answer', backref='user', lazy=True)
 
 class Question(db.Model):
