@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ gender }} 퀴즈</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="quiz-container">
+        <h3>{{ gender | capitalize }} 퀴즈 시작!</h3>
+        <div class="question">
+            <p>{{ question }}</p>
+        </div>
+        <div class="choices">
+            <button class="choice" onclick="location.href='{{ url_for('main.quiz', gender=gender) }}'">답변 1</button>
+            <button class="choice" onclick="location.href='{{ url_for('main.quiz', gender=gender) }}'">답변 2</button>
+            <button class="choice" onclick="location.href='{{ url_for('main.quiz', gender=gender) }}'">답변 3</button>
+            <button class="choice" onclick="location.href='{{ url_for('main.quiz', gender=gender) }}'">답변 4</button>
+        </div>
+    </div>
+</body>
+</html>

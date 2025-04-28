@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>성별 선택</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="gender-selection-container">
+        <div class="gender-selection-form">
+            <h1>성별 선택</h1>
+            <p>남자어와 여자어 중 하나를 선택하세요.</p>
+            <form method="POST">
+                <label>
+                    <input type="radio" name="gender" value="남자" required> 남자어
+                </label>
+                <label>
+                    <input type="radio" name="gender" value="여자"> 여자어
+                </label>
+                <div class="submit-btn-container">
+                    <button type="submit" class="submit-btn">제출</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

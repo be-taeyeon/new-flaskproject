@@ -1,0 +1,120 @@
+/* 기본 전체 페이지 스타일 */
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f4f4f9; /* 부드러운 밝은 회색 */
+  color: #2c3e50; /* 어두운 회색으로 텍스트 설정 */
+  margin: 0;
+  padding: 0;
+}
+
+/* 헤더, 로고 등 */
+header {
+  background-color: #34495e; /* 어두운 색 배경 */
+  padding: 20px;
+  color: white;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* 메인 콘텐츠 */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 50px auto;
+}
+
+/* 회원가입/로그인 폼 스타일 */
+.form-container {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+h2 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+/* 입력 필드 스타일 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+input[type="submit"] {
+  background-color: #2ecc71; /* 초록색 */
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  border: none;
+}
+
+input[type="submit"]:hover {
+  background-color: #27ae60;
+}
+
+/* 링크 스타일 */
+a {
+  color: #3498db; /* 파란색 링크 */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 퀴즈 페이지 스타일 */
+.quiz-container {
+  background-color: rgba(255, 255, 255, 0.95); /* 약간 투명한 흰색 배경 */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-top: 50px;
+}
+
+.quiz-container h3 {
+  color: #34495e;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* 질문 텍스트 스타일 */
+.quiz-container .question {
+  color: #2c3e50;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+/* 답변 버튼 스타일 */
+.quiz-container .choice {
+  background-color: #f39c12;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1.1em;
+  margin: 10px 0;
+  display: inline-block;
+  width: 100%;
+}
+
+.quiz-container .choice:hover {
+  background-color: #e67e22;
+}
