@@ -1,0 +1,24 @@
+<!-- templates/survey_question.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ question.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>{{ question.title }}</h2>
+        <form action="" method="POST">
+            {% for choice in question.choices %}
+                <label>
+                    <input type="radio" name="answer" value="{{ choice }}" required>
+                    {{ choice }}
+                </label><br>
+            {% endfor %}
+            <button type="submit">다음</button>
+        </form>
+    </div>
+</body>
+</html>

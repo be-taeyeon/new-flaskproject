@@ -1,0 +1,34 @@
+<!-- templates/male_survey.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>남자어 설문</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>남자어 설문</h2>
+        <form action="/survey/male/submit" method="POST">
+            <label for="question1">1. 좋아하는 스포츠는?</label>
+            <select id="question1" name="question1" required>
+                <option value="soccer">축구</option>
+                <option value="basketball">농구</option>
+                <option value="baseball">야구</option>
+                <option value="other">기타</option>
+            </select>
+
+            <label for="question2">2. 가장 좋아하는 영화 장르는?</label>
+            <select id="question2" name="question2" required>
+                <option value="action">액션</option>
+                <option value="comedy">코미디</option>
+                <option value="drama">드라마</option>
+                <option value="other">기타</option>
+            </select>
+
+            <button type="submit">제출하기</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -8,8 +8,8 @@ $ GPT 시작해줘~^^
 <br/>
 
 # 1. Project Overview (프로젝트 개요)
-- 프로젝트 이름: FLASK MINIPROJECT
-- 프로젝트 설명: 이상형 월드컵 개념으로 나의 호감 배우를 찾아보는 설문조사!
+- 프로젝트 이름: 남자어/여자어 능력고사!!
+- 프로젝트 설명: 남자어와 여자어에 대해 어느정도 알고 있는지 테스트해보는 사이트 입니다.
 
 <br/>
 <br/>
@@ -31,23 +31,19 @@ $ GPT 시작해줘~^^
 - **로그인**:
   - 사용자 인증 정보를 통해 로그인합니다.
 
+- **설문 테스트**:
+  - 사용자의 성별에따라 선택하여 설문을 시작할수있습니다.
+
+- **결과**:
+  - 테스트 종료후 결과를 볼수있습니다.
+
+
+
 <!-- - **설문 조사하기**:
   - 캘린더 UI를 통해 동아리 관련 일정 추가&삭제가 가능합니다.
   - 체크박스를 통해 종료되거나 이미 수행한 일정을 표시할 수 있습니다.
 
-- **동아리 찾기**:
-  - 대학 내 동아리를 검색할 수 있습니다.
-  - 검색 시 해당 동아리가 업로드한 홍보글이 보여집니다.
-
-- **동아리 홍보**:
-  - 홍보글 등록을 통해 동아리를 홍보할 수 있습니다.
-
-- **동아리 만들기**:
-  - 새로운 동아리를 만들어 관리할 수 있습니다.
-
-- **동아리 프로필**:
-  - 동아리 홍보글에서 동아리 이름(링크)를 클릭하면 해당 동아리 프로필로 이동합니다.
-  - 동아리 프로필에서는 동아리 소개, 동아리 활동사진 갤러리, 동아리 홍보글 기록관 등을 볼 수 있습니다. -->
+ -->
 
 <br/>
 <br/>
@@ -55,10 +51,10 @@ $ GPT 시작해줘~^^
 # 4. Tasks & Responsibilities (작업 및 역할 분담)
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| 김태연    |  <img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="이동규" width="100"> | <ul><li>팀장</li><li>아직 모름</li><li>아직모름</li></ul>     |
-| 최규호   |  <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100">| <ul><li>개발중</li><li>아직</li><li>몰라</li></ul> |
-| 이유진   |  <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100">    |<ul><li>유일한 여성</li><li>몰라</li><li>몰라</li><li>몰라</li><li>몰라</li></ul>  |
-| 김상협    |  <img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="이승준" width="100">    | <ul><li>아재</li><li>몰라</li><li>몰라</li></ul>    |
+| 김태연    |  <img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="이동규" width="100"> | <ul><li>팀장</li><li>유저 함수 코딩</li><li>사이트 배포 하기</li></ul>     |
+| 최규호   |  <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100">| <ul><li>개발중</li><li>전체적인 뼈대 구축</li><li>관리자 페이지 개발</li></ul> |
+| 이유진   |  <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100">    |<ul><li>유일한 여성</li><li>이미지 파일 과 그 상황에 맞게 로직 구축</li><li>웹사이트 배포</li><li>몰라</li><li>몰라</li></ul>  |
+| 김상협    |  <img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="이승준" width="100">    | <ul><li>아재</li><li>질문 함수 코딩</li><li>데이터 베이스 연결</li></ul>    |
 
 <br/>
 <br/>

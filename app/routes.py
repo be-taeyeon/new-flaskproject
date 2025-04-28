@@ -1,78 +1,75 @@
-from flask import Flask, Blueprint, session, render_template, request, redirect, url_for
-import os
-from werkzeug.security import generate_password_hash, check_password_hash
-from config import db
-from app.models import User
-from flask import flash
-# Flask 애플리케이션 생성
+from flask import Blueprint, render_template, redirect, url_for, request, flash
+from app import db
+from app.models import Question, Answer, Choices
+from flask_login import current_user, login_required
+from sqlalchemy import func
+
 main = Blueprint('main', __name__)
 
-# 애플리케이션 초기화 후 바로 secret_key 설정
-main.secret_key = os.urandom(24)  # 또는 app.config['SECRET_KEY'] = os.urandom(24)
-
 @main.route('/')
+@login_required
 def index():
-    return render_template('index.html')
+    return render_template("index.html")  # index.html 파일을 작성하여 메인 페이지를 제공
 
+@main.route('/survey/male', methods=['GET', 'POST'])
+@login_required
+def male_survey():
+    # 'male'로 분류된 설문을 진행
+    questions = Question.query.filter_by(survey_type="male", is_active=True).all()
+    return render_template("survey_male.html", questions=questions)
 
-# 회원가입 페이지
-@main.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        # 회원가입 처리 로직
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        
-        # 비밀번호 해싱
-        hashed_password = generate_password_hash(password)
-        
-        # DB에 사용자 정보 저장
-        new_user = User(username=username, email=email, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        
-        return redirect(url_for('main.index'))  # 회원가입 후 메인 페이지로 이동
+@main.route('/survey/female', methods=['GET', 'POST'])
+@login_required
+def female_survey():
+    # 'female'로 분류된 설문을 진행
+    questions = Question.query.filter_by(survey_type="female", is_active=True).all()
+    return render_template("survey_female.html", questions=questions)
+
+@main.route('/submit_answer/<int:question_id>', methods=['POST'])
+@login_required
+def submit_answer(question_id):
+    choice_id = request.form.get("choice_id")
+    choice = Choices.query.get_or_404(choice_id)
     
-    return render_template('signup.html')
+    # 답변 저장
+    answer = Answer(user_id=current_user.id, choice_id=choice.id, question_id=question_id, answer=choice.choice_text, survey_type=choice.question.survey_type)
+    db.session.add(answer)
+    db.session.commit()
 
-@main.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        
-        user = User.query.filter_by(email=email).first()
-        
-        if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id  # 로그인된 사용자 ID 세션에 저장
-            return redirect(url_for('main.index'))  # 로그인 후 메인 페이지로 이동
-        else:
-            flash('로그인 실패: 이메일 또는 비밀번호를 확인해주세요.', 'danger')
+    # 다음 질문으로 이동 (여기서는 질문이 1개씩 표시됨)
+    return redirect(url_for('main.next_question', question_id=question_id + 1))
+
+@main.route('/next_question/<int:question_id>', methods=['GET'])
+@login_required
+def next_question(question_id):
+    question = Question.query.get(question_id)
+    if not question:
+        return redirect(url_for('main.survey_complete'))
+
+    return render_template('survey_question.html', question=question)
+
+@main.route('/survey_complete')
+@login_required
+def survey_complete():
+    return render_template("survey_complete.html")
+
+@main.route('/survey/results/<survey_type>', methods=['GET'])
+@login_required
+def survey_results(survey_type):
+    # 설문 유형에 따른 평균 계산
+    questions = Question.query.filter_by(survey_type=survey_type).all()
+    result_data = {}
     
-    return render_template('login.html')
+    for question in questions:
+        avg_answer = db.session.query(func.avg(Answer.answer)).filter(Answer.question_id == question.id).scalar()
+        most_selected_choice = db.session.query(
+            Choices.choice_text, 
+            func.count(Answer.choice_id).label('count')
+        ).join(Answer, Answer.choice_id == Choices.id).filter(Choices.question_id == question.id).group_by(Choices.id).order_by(func.count(Answer.choice_id).desc()).first()
 
+        result_data[question.title] = {
+            'average': avg_answer,
+            'most_selected': most_selected_choice
+        }
 
-
-@main.route('/quiz/<gender>', methods=['GET', 'POST'])
-def quiz(gender):
-    if 'user_id' not in session:
-        return redirect(url_for('main.login'))  # 로그인되지 않은 사용자에게 로그인 페이지로 리다이렉트
-    
-    question = "질문 예시입니다. 어떤 답변을 고르시겠어요?"
-    
-    if request.method == 'POST':
-        # 답변 처리 로직
-        return redirect(url_for('main.index'))  # 퀴즈 종료 후 메인 페이지로 이동
-    
-    return render_template('quiz.html', gender=gender, question=question)
-
-
-# 로그아웃 페이지
-@main.route('/logout')
-def logout():
-    session.pop('user_id', None)  # 세션에서 user_id 삭제
-    return redirect(url_for('main.index'))
-
-if __name__ == '__main__':
-    main.run(debug=True)
+    return render_template('survey_results.html', result_data=result_data)

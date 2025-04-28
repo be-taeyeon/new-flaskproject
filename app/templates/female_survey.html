@@ -1,0 +1,34 @@
+<!-- templates/female_survey.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여자어 설문</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>여자어 설문</h2>
+        <form action="/survey/female/submit" method="POST">
+            <label for="question1">1. 좋아하는 취미는?</label>
+            <select id="question1" name="question1" required>
+                <option value="reading">독서</option>
+                <option value="cooking">요리</option>
+                <option value="painting">그림 그리기</option>
+                <option value="other">기타</option>
+            </select>
+
+            <label for="question2">2. 이상형은 어떤 사람인가요?</label>
+            <select id="question2" name="question2" required>
+                <option value="gentle">부드럽고 다정한 사람</option>
+                <option value="outgoing">활발하고 외향적인 사람</option>
+                <option value="serious">진지하고 신중한 사람</option>
+                <option value="other">기타</option>
+            </select>
+
+            <button type="submit">제출하기</button>
+        </form>
+    </div>
+</body>
+</html>
