@@ -51,10 +51,10 @@ $ GPT 시작해줘~^^
 # 4. Tasks & Responsibilities (작업 및 역할 분담)
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| 김태연    |  <img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="이동규" width="100"> | <ul><li>팀장</li><li>유저 함수 코딩</li><li>사이트 배포 하기</li></ul>     |
-| 최규호   |  <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100">| <ul><li>개발중</li><li>전체적인 뼈대 구축</li><li>관리자 페이지 개발</li></ul> |
-| 이유진   |  <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100">    |<ul><li>유일한 여성</li><li>이미지 파일 과 그 상황에 맞게 로직 구축</li><li>웹사이트 배포</li><li>몰라</li><li>몰라</li></ul>  |
-| 김상협    |  <img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="이승준" width="100">    | <ul><li>아재</li><li>질문 함수 코딩</li><li>데이터 베이스 연결</li></ul>    |
+| 김태연    |  <img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="이동규" width="100"> | <ul><li>팀장</li><li>유저 함수 코딩, 질문 정리</li><li>피피티준비및 발표</li></ul>     |
+| 최규호   |  <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100">| <ul><li>전체뼈대 흐름 구축</li><li>사이트 배포</li><li>ORM활용한 함수</li></ul> |
+| 이유진   |  <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100">    |<ul><li>유일한 여성</li><li>이미지 파일 과 그 상황에 맞게 로직 구축</li><li>초이스 함수및 css담당</li></ul>  |
+| 김상협    |  <img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="이승준" width="100">    | <ul><li>코딩 아재</li><li>질문 함수 코딩및 전반적인 연결 로직구축</li><li>데이터 베이스 연결</li></ul>    |
 
 <br/>
 <br/>
